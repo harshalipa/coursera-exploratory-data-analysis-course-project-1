@@ -20,7 +20,7 @@ png("plot1.png", width=480, height=480)
 
  #Plot 1
 hist(powerDT[,powerDT$Global_active_power], main="Global Active Power", 
-    xlab="Global Active Power ", ylab="Frequency", col="red")
+    xlab="Global Active Power (killowats)", ylab="Frequency", col="red")
 
 dev.off()
 
