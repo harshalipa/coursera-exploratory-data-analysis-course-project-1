@@ -1,17 +1,25 @@
-dataFile <- "./data/household_power_consumption.txt"
-data <- read.table(dataFile, header=TRUE, sep=";", stringsAsFactors=FALSE, dec=".")
-subSetData <- data[data$Date %in% c("1/2/2007","2/2/2007") ,]
 
-#str(subSetData)
-datetime <- strptime(paste(subSetData$Date, subSetData$Time, sep=" "), "%d/%m/%Y %H:%M:%S") 
-globalActivePower <- as.numeric(subSetData$Global_active_power)
-subMetering1 <- as.numeric(subSetData$Sub_metering_1)
-subMetering2 <- as.numeric(subSetData$Sub_metering_2)
-subMetering3 <- as.numeric(subSetData$Sub_metering_3)
+library("data.table")
+
+
+
+#Reads in data from file then subsets data for specified dates
+powerDT <- data.table::fread(input = "household_power_consumption.txt", na.strings="?")
+
+# Prevents Scientific Notation
+powerDT[, Global_active_power := lapply(.SD, as.numeric), .SDcols = c("Global_active_power")]
+
+# Making a POSIXct date capable of being filtered and graphed by time of day
+powerDT[, dateTime := as.POSIXct(paste(Date, Time), format = "%d/%m/%Y %H:%M:%S")]
+
+# Filter Dates for 2007-02-01 and 2007-02-02
+powerDT <- powerDT[(dateTime >= "2007-02-01") & (dateTime < "2007-02-03")]
 
 png("plot3.png", width=480, height=480)
-plot(datetime, subMetering1, type="l", ylab="Energy Submetering", xlab="")
-lines(datetime, subMetering2, type="l", col="red")
-lines(datetime, subMetering3, type="l", col="blue")
-legend("topright", c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), lty=1, lwd=2.5, col=c("black", "red", "blue"))
-dev.off()
+
+# Plot 3
+plot(powerDT[, dateTime], powerDT[, Sub_metering_1], type="l", xlab="", ylab="Energy sub metering")
+lines(powerDT[, dateTime], powerDT[, Sub_metering_2],col="red")
+lines(powerDT[, dateTime], powerDT[, Sub_metering_3],col="blue")
+legend("topright", col=c("black","red","blue"), c("Sub_metering_1  ","Sub_metering_2  ", "Sub_metering_3  "),lty=c(1,1), lwd=c(1,1))
+
