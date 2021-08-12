@@ -15,7 +15,7 @@ png("plot3.png", width=480, height=480)
 plot(power[, dateTime], power[, Sub_metering_1], type="l", xlab="", ylab="Energy sub metering")
 lines(power[, dateTime], power[, Sub_metering_2],col="red")
 lines(power[, dateTime], power[, Sub_metering_3],col="blue")
-legend("topright", col=c("black","red","blue"), c("Sub_metering_1  ","Sub_metering_2  ", "Sub_metering_3  "))
+legend("topright",  c("Sub_metering_1  ","Sub_metering_2  ", "Sub_metering_3  "))
 
 dev.off()
 
